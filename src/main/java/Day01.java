@@ -1,8 +1,3 @@
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,56 +6,45 @@ import java.util.List;
  * @author uitzetter
  */
 public class Day01 {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+
+    public static final String EMPTY = "";
+
+    public static void main(String[] args) {
         new Day01().run();
     }
 
-    private void run() throws IOException, URISyntaxException {
-        partOne();
-        partTwo();
+    private void run() {
+        List<String> input = InputLoader.getInput("day01Input.txt");
+        partOne(input);
+        partTwo(input);
     }
 
-    private void partOne() throws IOException, URISyntaxException {
-        Path inputPath = Paths.get(ClassLoader.getSystemClassLoader().getResource("day01Input.txt").toURI());
-        List<String> input = Files.readAllLines(inputPath);
-        Elf elf = new Elf();
-        List<Elf> elves = new ArrayList<>();
+    private void partOne(List<String> input) {
+        System.out.println(getTotalCaloriesSortedDesc(input).get(0));
+    }
+
+    private void partTwo(List<String> input) {
+        List<Integer> totalCaloriesSortedDesc = getTotalCaloriesSortedDesc(input);
+        System.out.println(totalCaloriesSortedDesc.get(0) + totalCaloriesSortedDesc.get(1) + totalCaloriesSortedDesc.get(2));
+    }
+
+    private List<Integer> getTotalCaloriesSortedDesc(List<String> input) {
+        int totalOfOne = 0;
+        List<Integer> totalOfAll = new ArrayList<>();
 
         for (String line : input) {
-            if ("".equals(line)) {
-                elves.add(elf);
-                elf = new Elf();
+            if (isEmpty(line)) {
+                totalOfAll.add(totalOfOne);
+                totalOfOne = 0;
                 continue;
             }
-            elf.calories += Integer.parseInt(line);
+            totalOfOne += Integer.parseInt(line);
         }
 
-        List<Integer> highestCaloriesSorted = elves.stream().map(e -> e.calories).sorted(Comparator.reverseOrder()).toList();
-
-        System.out.println(highestCaloriesSorted.get(0));
+        return totalOfAll.stream().sorted(Comparator.reverseOrder()).toList();
     }
 
-    private void partTwo() throws IOException, URISyntaxException {
-        Path inputPath = Paths.get(ClassLoader.getSystemClassLoader().getResource("day01Input.txt").toURI());
-        List<String> input = Files.readAllLines(inputPath);
-        Elf elf = new Elf();
-        List<Elf> elves = new ArrayList<>();
-
-        for (String line : input) {
-            if ("".equals(line)) {
-                elves.add(elf);
-                elf = new Elf();
-                continue;
-            }
-            elf.calories += Integer.parseInt(line);
-        }
-
-        List<Integer> highestCaloriesSorted = elves.stream().map(e -> e.calories).sorted(Comparator.reverseOrder()).toList();
-
-        System.out.println(highestCaloriesSorted.get(0) + highestCaloriesSorted.get(1) + highestCaloriesSorted.get(2));
+    private boolean isEmpty(String line) {
+        return EMPTY.equals(line);
     }
-}
-
-class Elf {
-    public int calories;
 }
