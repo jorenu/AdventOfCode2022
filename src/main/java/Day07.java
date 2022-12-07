@@ -1,4 +1,3 @@
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,12 +64,11 @@ public class Day07 {
                 Directory directory = new Directory(dirName);
                 currentDir.addDirectory(directory);
             } else {
-                File file = new File(getFileSize(line));
-                currentDir.addFile(file);
-                currentDir.addSize(file.getSize());
+                int fileSize = getFileSize(line);
+                currentDir.addSize(fileSize);
                 Directory parent = currentDir.getParent();
                 while (parent != null) {
-                    parent.addSize(file.getSize());
+                    parent.addSize(fileSize);
                     parent = parent.getParent();
                 }
             }
@@ -123,16 +121,8 @@ public class Day07 {
 
 @Getter
 @Setter
-@AllArgsConstructor
-class File {
-    private int size;
-}
-
-@Getter
-@Setter
 class Directory {
     private String name;
-    private List<File> files = new ArrayList<>();
     private List<Directory> directories = new ArrayList<>();
     private Directory parent;
     private int totalSize;
@@ -144,10 +134,6 @@ class Directory {
     public void addDirectory(Directory directory) {
         this.directories.add(directory);
         directory.parent = this;
-    }
-
-    public void addFile(File file) {
-        this.files.add(file);
     }
 
     public void addSize(int size) {
